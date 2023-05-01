@@ -3,18 +3,22 @@ const sql = require("mssql");
 
 const getAllClientsQUERY = async () => {
     const pool = await sql.connect(dbConfig);
-    const results = await pool.request().query("SELECT * FROM Client WHERE Deleted != 1");
+    const results = await pool
+        .request()
+        .input("FALSE", sql.Int, 0)
+        .query("SELECT * FROM Client WHERE Deleted = @FALSE");
 
-    return results;
+    return results.recordset;
 };
 
-const findClientByNameQUERY = async (name) => {
+const getClientByID_QUERY = async (clientID) => {
     try {
         const pool = await sql.connect(dbConfig);
         const request = new sql.Request(pool);
         const result = await request
-            .input("name", sql.NVarChar(255), name)
-            .query(`SELECT * FROM Client WHERE Name=@name AND Deleted != 1`);
+            .input("clientID", sql.Int, clientID)
+            .input("FALSE", sql.Int, 0)
+            .query("SELECT * FROM Client WHERE ID=@clientID AND Deleted = @FALSE");
 
         return result.recordset[0];
     } catch (error) {
@@ -87,7 +91,7 @@ const deleteClientQUERY = async (clientID) => {
 
 module.exports = {
     getAllClientsQUERY,
-    findClientByNameQUERY,
+    getClientByID_QUERY,
     addNewClientQUERY,
     updateClientQUERY,
     deleteClientQUERY,
