@@ -2,13 +2,17 @@ const dbConfig = require("../common/db-config");
 const sql = require("mssql");
 
 const getAllClientsQUERY = async () => {
-    const pool = await sql.connect(dbConfig);
-    const results = await pool
-        .request()
-        .input("FALSE", sql.Int, 0)
-        .query("SELECT * FROM Client WHERE Deleted = @FALSE");
+    try {
+        const pool = await sql.connect(dbConfig);
+        const results = await pool
+            .request()
+            .input("FALSE", sql.Int, 0)
+            .query("SELECT * FROM Client WHERE Deleted = @FALSE");
 
-    return results.recordset;
+        return results.recordset;
+    } catch (error) {
+        console.log("Error while trying to get all clients!", error);
+    }
 };
 
 const getClientByID_QUERY = async (clientID) => {
@@ -22,7 +26,7 @@ const getClientByID_QUERY = async (clientID) => {
 
         return result.recordset[0];
     } catch (error) {
-        console.log(error);
+        console.log("Error while trying to get client by ID!", error);
     }
 };
 
@@ -44,8 +48,8 @@ const addNewClientQUERY = async (Client) => {
             );
 
         return result.recordset[0];
-    } catch (e) {
-        console.log(e);
+    } catch (error) {
+        console.log("Error while trying to insert a new client!", error);
     }
 };
 
@@ -69,7 +73,7 @@ const updateClientQUERY = async (clientID, Client) => {
 
         return results;
     } catch (error) {
-        console.log("Error while trying to update a client!");
+        console.log("Error while trying to update a client!", error);
     }
 };
 
@@ -85,7 +89,7 @@ const deleteClientQUERY = async (clientID) => {
 
         return results;
     } catch (error) {
-        console.log("Error while trying to delete a client!");
+        console.log("Error while trying to delete a client!", error);
     }
 };
 

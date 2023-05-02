@@ -10,7 +10,7 @@ const getAllCoachesQUERY = async () => {
         );
         return coaches.recordset;
     } catch (error) {
-        console.log("Error while trying to get all coaches!");
+        console.log("Error while trying to get all coaches!", error);
     }
 };
 
@@ -27,7 +27,7 @@ const getCoachByID_QUERY = async (coachID) => {
 
         return coach.recordset[0];
     } catch (error) {
-        console.log("Error while trying to get coach by ID!");
+        console.log("Error while trying to get coach by ID!", error);
     }
 };
 
@@ -49,8 +49,8 @@ const addNewCoachQUERY = async (Coach) => {
             );
 
         return result.recordset[0];
-    } catch (e) {
-        console.log("Error while trying to insert a new coach!");
+    } catch (error) {
+        console.log("Error while trying to insert a new coach!", error);
     }
 };
 
@@ -74,7 +74,7 @@ const updateCoachQUERY = async (coachID, Coach) => {
 
         return results;
     } catch (error) {
-        console.log("Error while trying to update a coach!");
+        console.log("Error while trying to update a coach!", error);
     }
 };
 
@@ -90,7 +90,7 @@ const deleteCoachQUERY = async (coachID) => {
 
         return results;
     } catch (error) {
-        console.log("Error while trying to delete a coach!");
+        console.log("Error while trying to delete a coach!", error);
     }
 };
 
