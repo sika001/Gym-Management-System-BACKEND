@@ -47,7 +47,7 @@ const addNewCoachQUERY = async (Coach) => {
             .query(
                 "INSERT INTO Employee (Name, Surname, DateOfBirth, Phone, Address, Email, Password, FK_GymID) OUTPUT inserted.* VALUES (@Name, @Surname, @DateOfBirth, @Phone, @Address, @Email, @Password, @FK_GymID)"
             );
-        console.log(result);
+
         return result.recordset[0];
     } catch (e) {
         console.log("Error while trying to insert a new coach!");
