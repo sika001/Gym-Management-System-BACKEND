@@ -26,8 +26,7 @@ const addNewClient = async (req, res) => {
     const result = await clientRepository.addNewClientQUERY(client);
 
     if (result) {
-        res.status(201);
-        res.send(result);
+        res.status(201).send(result);
     } else {
         res.status(400).send("Cannot insert a client into a database!");
     }
