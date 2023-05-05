@@ -45,6 +45,7 @@ const updateExpiredMembershipQUERY = async () => {
         console.log("Error while trying to set membership status to expired!", error);
     }
 };
+
 const addNewMembershipQUERY = async (Membership) => {
     //Adds new membership, and sets => ExpiryDate = StartDate + NumDaysValid
     try {
