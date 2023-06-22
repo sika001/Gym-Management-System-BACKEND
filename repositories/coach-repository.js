@@ -22,7 +22,7 @@ const getCoachByID_QUERY = async (coachID) => {
             .input("coachID", sql.Int, coachID)
             .input("FALSE", 0)
             .query(
-                "SELECT * FRsOM Employee as E, Coach as C WHERE E.ID = C.FK_ID AND c.FK_ID = @coachID AND E.Deleted = @FALSE"
+                "SELECT * FROM Employee as E, Coach as C WHERE E.ID = C.FK_ID AND c.FK_ID = @coachID AND E.Deleted = @FALSE"
             );
 
         return coach.recordset[0];
@@ -41,11 +41,9 @@ const addNewCoachQUERY = async (Coach) => {
             .input("DateOfBirth", sql.DateTime2, Coach.DateOfBirth)
             .input("Phone", sql.NVarChar(50), Coach.Phone)
             .input("Address", sql.NVarChar(50), Coach.Address)
-            .input("Email", sql.NVarChar(50), Coach.Email)
-            .input("Password", sql.NVarChar(50), Coach.Password)
             .input("FK_GymID", sql.Int, Coach.FK_GymID)
             .query(
-                "INSERT INTO Employee (Name, Surname, DateOfBirth, Phone, Address, Email, Password, FK_GymID) OUTPUT inserted.* VALUES (@Name, @Surname, @DateOfBirth, @Phone, @Address, @Email, @Password, @FK_GymID)"
+                "INSERT INTO Employee (Name, Surname, DateOfBirth, Phone, Address, FK_GymID) OUTPUT inserted.* VALUES (@Name, @Surname, @DateOfBirth, @Phone, @Address, @FK_GymID)"
             );
 
         return result.recordset[0];
@@ -65,11 +63,9 @@ const updateCoachQUERY = async (coachID, Coach) => {
             .input("DateOfBirth", sql.DateTime2, Coach.DateOfBirth)
             .input("Phone", sql.NVarChar(50), Coach.Phone)
             .input("Address", sql.NVarChar(50), Coach.Address)
-            .input("Email", sql.NVarChar(50), Coach.Email)
-            .input("Password", sql.NVarChar(50), Coach.Password)
             .input("FK_GymID", sql.Int, Coach.FK_GymID)
             .query(
-                "UPDATE Employee SET Name = ISNULL(@Name, Name), Surname = ISNULL(@Surname, Surname), DateOfBirth = ISNULL(@DateOfBirth, DateOfBirth), Phone = ISNULL(@Phone, Phone), Address = ISNULL(@Address, Address), Email = ISNULL(@Email, Email), Password = ISNULL(@Password, Password), FK_GymID = ISNULL(@FK_GymID, FK_GymID) WHERE ID = @coachID;"
+                "UPDATE Employee SET Name = ISNULL(@Name, Name), Surname = ISNULL(@Surname, Surname), DateOfBirth = ISNULL(@DateOfBirth, DateOfBirth), Phone = ISNULL(@Phone, Phone), Address = ISNULL(@Address, Address), FK_GymID = ISNULL(@FK_GymID, FK_GymID) WHERE ID = @coachID;"
             );
 
         return results;
