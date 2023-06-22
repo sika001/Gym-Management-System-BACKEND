@@ -42,10 +42,10 @@ const addNewClientQUERY = async (Client) => {
             .input("Address", sql.NVarChar(50), Client.Address)
             .input("FK_WorkoutID", sql.Int, Client.FK_WorkoutID)
             .query(
-                "INSERT INTO Client OUTPUT inserted.* VALUES (@Name, @Surname, @DateOfBirth, @Phone, @Address, @FK_WorkoutID)"
+                "INSERT INTO Client (Name, Surname, DateOfBirth, Phone, Address, FK_WorkoutID) OUTPUT inserted.* VALUES (@Name, @Surname, @DateOfBirth, @Phone, @Address, @FK_WorkoutID)"
             );
 
-        return result.recordset[0];
+        return result;
     } catch (error) {
         console.log("Error while trying to insert a new client!", error);
     }

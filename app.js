@@ -1,4 +1,5 @@
 const express = require("express");
+const { authentication } = require("./common/db-config");
 const cors = module.require("cors");
 const clientRouter = module.require("./routing/client-routing.js");
 const coachRouter = module.require("./routing/coach-routing.js");
@@ -7,6 +8,8 @@ const countryRouter = module.require("./routing/country-routing.js");
 const cityRouter = module.require("./routing/city-routing.js");
 const membershipRouter = module.require("./routing/membership-routing.js");
 const workoutRouter = module.require("./routing/workout-routing.js");
+const loginRouter = module.require("./routing/login-routing.js");
+const auth = module.require("./middlewares/authentication.js");
 
 const app = express();
 app.use(cors());
@@ -17,10 +20,11 @@ app.listen(3000, () => {
     console.log("Server started listening  at port 3000");
 });
 
-app.use("/client", clientRouter);
-app.use("/coach", coachRouter);
-app.use("/arrival", arrivalRouter);
+app.use("/client", auth, clientRouter); //Zasticene rute
+app.use("/coach", auth, coachRouter);
+app.use("/arrival", auth, arrivalRouter);
 app.use("/country", countryRouter);
 app.use("/city", cityRouter);
 app.use("/membership", membershipRouter);
 app.use("/workout", workoutRouter);
+app.use("/login", loginRouter);
