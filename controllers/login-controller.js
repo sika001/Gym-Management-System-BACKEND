@@ -7,9 +7,9 @@ const login = async (req, res) => {
     const password = req.body.Password;
 
     const hashedPassword = crypto.createHash("md5").update(password).digest("hex"); //hashes password
-
+    console.log(email, password);
     const results = await roleRepository.loginQUERY(email, hashedPassword);
-
+    console.log(results);
     if (results) {
         let token = jwt.sign(
             {

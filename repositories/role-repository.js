@@ -32,9 +32,8 @@ const loginQUERY = async (Email, Password) => {
         const results = await request
             .input("Email", sql.NVarChar(50), Email)
             .input("Password", sql.NVarChar(50), Password)
-            .input("isClient", sql.Int, 1)
             .query(
-                "SELECT * FROM Role WHERE Email = @Email AND Password = @Password AND isClient = @isClient"
+                "SELECT * FROM Role as R WHERE Email = @Email AND Password = @Password AND ((isClient = 1 AND NOT EXISTS(SELECT 1 FROM Client as C WHERE C.ID = R.FK_ClientID AND C.Deleted = 1)) OR ((isCoach = 1 OR isAdmin = 1) AND NOT EXISTS(SELECT 1 FROM Employee as E WHERE E.ID = R.FK_EmployeeID AND E.Deleted = 1)));"
             );
 
         return results.recordset[0];
