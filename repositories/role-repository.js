@@ -33,6 +33,7 @@ const loginQUERY = async (Email, Password) => {
             .input("Email", sql.NVarChar(50), Email)
             .input("Password", sql.NVarChar(50), Password)
             .query(
+                //selects Role data from only for non-deleted clients or employees
                 "SELECT * FROM Role as R WHERE Email = @Email AND Password = @Password AND ((isClient = 1 AND NOT EXISTS(SELECT 1 FROM Client as C WHERE C.ID = R.FK_ClientID AND C.Deleted = 1)) OR ((isCoach = 1 OR isAdmin = 1) AND NOT EXISTS(SELECT 1 FROM Employee as E WHERE E.ID = R.FK_EmployeeID AND E.Deleted = 1)));"
             );
 
