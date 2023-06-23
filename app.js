@@ -9,6 +9,7 @@ const cityRouter = module.require("./routing/city-routing.js");
 const membershipRouter = module.require("./routing/membership-routing.js");
 const workoutRouter = module.require("./routing/workout-routing.js");
 const loginRouter = module.require("./routing/login-routing.js");
+const registerRouter = module.require("./routing/register-routing.js");
 const auth = module.require("./middlewares/authentication.js");
 
 const app = express();
@@ -28,3 +29,4 @@ app.use("/city", cityRouter);
 app.use("/membership", membershipRouter);
 app.use("/workout", workoutRouter);
 app.use("/login", loginRouter);
+app.use("/register", registerRouter);
