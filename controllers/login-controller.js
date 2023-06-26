@@ -17,7 +17,7 @@ const login = async (req, res) => {
                 FK_ClientID: results.FK_ClientID,
                 FK_EmployeeID: results.FK_EmployeeID,
                 isClient: results.isClient,
-                isCoach: results.isCoach,
+                isEmployee: results.isEmployee,
                 isAdmin: results.isAdmin,
             },
             "BILDARA",

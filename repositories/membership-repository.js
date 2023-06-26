@@ -3,11 +3,15 @@ const sql = require("mssql");
 
 const getAllActiveMembershipsQUERY = async () => {
     try {
+        //Data used for Table on frontend
         const pool = await sql.connect(dbConfig);
         const request = new sql.Request(pool);
         const results = await request
             .input("TRUE", sql.Int, 1)
-            .query("SELECT * FROM Membership WHERE Status = @TRUE");
+            .input("FALSE", sql.Int, 0)
+            .query(
+                "SELECT C.Name, C.Surname, C.DateOfBirth, C.Phone, W.Name as 'Workout Name', M.StartDate as 'Start', T.NumDaysValid as 'Valid (days)', T.Name as 'Membership Type', M.Status FROM Membership as M, Client as C, Workout as W, MembershipType as T WHERE M.Status = @TRUE AND C.ID = M.FK_ClientID AND C.DELETED = @FALSE AND C.FK_WorkoutID = W.ID AND M.FK_MembershipTypeID = T.ID"
+            );
 
         return results.recordset;
     } catch (error) {

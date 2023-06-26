@@ -2,7 +2,7 @@ const express = require("express");
 const { authentication } = require("./common/db-config");
 const cors = module.require("cors");
 const clientRouter = module.require("./routing/client-routing.js");
-const coachRouter = module.require("./routing/coach-routing.js");
+const employeeRouter = module.require("./routing/employee-routing.js");
 const arrivalRouter = module.require("./routing/arrival-routing.js");
 const countryRouter = module.require("./routing/country-routing.js");
 const cityRouter = module.require("./routing/city-routing.js");
@@ -21,9 +21,10 @@ app.listen(3000, () => {
     console.log("Server started listening  at port 3000");
 });
 
-app.use("/client", auth, clientRouter); //Zasticene rute
-app.use("/coach", auth, coachRouter);
-app.use("/arrival", auth, arrivalRouter);
+//VRATITI AUTORIZACIJu
+app.use("/client", clientRouter); //Zasticene rute
+app.use("/employee", employeeRouter);
+app.use("/arrival", arrivalRouter);
 app.use("/country", countryRouter);
 app.use("/city", cityRouter);
 app.use("/membership", membershipRouter);
