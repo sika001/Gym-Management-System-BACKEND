@@ -9,8 +9,8 @@ const register = async (req, res) => {
     //first one insert client data into Client table
     //second one inserts client's role in Role table (with email and password)
     const person = req.body;
-    const email = person.Email;
-    const password = person.Password;
+    const email = req.body.Email;
+    const password = req.body.Password;
     const hashedPassword = crypto.createHash("md5").update(password).digest("hex"); //hashes password
 
     const rolePerson = {
@@ -26,7 +26,7 @@ const register = async (req, res) => {
     };
 
     let result = null;
-
+    console.log("PERSON ROLE: ", rolePerson);
     ///DONT FORGET TO SET FK_EmployeeTypeID IF YOU WANT TO ADD EMPLOYEE
     if (person.FK_EmployeeTypeID == null) {
         console.log("USLO");

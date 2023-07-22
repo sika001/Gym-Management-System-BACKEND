@@ -1,7 +1,8 @@
 const employeeRepository = require("../repositories/employee-repository");
 
 const getAllEmployeees = async (req, res) => {
-    const employees = await employeeRepository.getAllEmployeeesQUERY();
+    const typeID = req.params.typeID;
+    const employees = await employeeRepository.getEmployeesWorkoutQUERY(typeID);
 
     if (employees) {
         res.status(200).send(employees);

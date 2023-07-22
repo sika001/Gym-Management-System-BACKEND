@@ -1,5 +1,7 @@
 const dbConfig = require("../common/db-config");
 const sql = require("mssql");
+const clientRepository = require("./client-repository");
+const employeeRepository = require("./employee-repository");
 
 const registerClientQUERY = async (Client) => {
     //invoked in client-controller (along with addClient function)
@@ -36,13 +38,40 @@ const loginQUERY = async (Email, Password) => {
             .input("Email", sql.NVarChar(50), Email)
             .input("Password", sql.NVarChar(50), Password)
             .query(
-                //selects Role data from only for non-deleted clients or employees
-                "SELECT * FROM Role as R WHERE Email = @Email AND Password = @Password AND ((isClient = 1 AND NOT EXISTS(SELECT 1 FROM Client as C WHERE C.ID = R.FK_ClientID AND C.Deleted = 1)) OR ((isEmployee = 1 OR isAdmin = 1) AND NOT EXISTS(SELECT 1 FROM Employee as E WHERE E.ID = R.FK_EmployeeID AND E.Deleted = 1)));"
+                `SELECT *
+                FROM Role as R
+                WHERE
+                Email = @Email
+                AND Password = @Password
+                AND (
+                    (isClient = 1 AND NOT EXISTS(SELECT 1 FROM Client as C WHERE C.ID = R.FK_ClientID AND C.Deleted = 1))
+                    OR ((isEmployee = 1 OR isAdmin = 1) AND NOT EXISTS(SELECT 1 FROM Employee as E WHERE E.ID = R.FK_EmployeeID AND E.Deleted = 1))
+                );`
             );
 
-        return results.recordset[0];
+        if (results.recordset.length === 1) {
+            //if a user exists, get his data
+            const roleData = results.recordset[0];
+
+            let userData;
+            if (roleData.isClient) {
+                const clientResult = await clientRepository.getClientByID_QUERY(
+                    roleData.FK_ClientID
+                ); //not calling the function from client-controller, beacuse it accepts FK_ClientID as an url parameter
+                userData = clientResult;
+            } else {
+                //TEST THIS PART WITH AN EMPLYOEE
+                const employeeResult = await employeeRepository.getEmployeeByID_QUERY(
+                    roleData.FK_EmployeeID
+                ); //not calling the function from employee-controller, beacuse it accepts FK_EmployeeID as an url parameter
+
+                userData = employeeResult.recordset[0];
+            }
+            console.log("userData", userData);
+            return userData;
+        }
     } catch (e) {
-        console.log("Error while trying to login a client!");
+        console.log("Error while trying to login a user!");
     }
 };
 

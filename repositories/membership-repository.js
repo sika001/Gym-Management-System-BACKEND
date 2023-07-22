@@ -10,7 +10,9 @@ const getAllActiveMembershipsQUERY = async () => {
             .input("TRUE", sql.Int, 1)
             .input("FALSE", sql.Int, 0)
             .query(
-                "SELECT C.Name, C.Surname, C.DateOfBirth, C.Phone, W.Name as 'Workout Name', M.StartDate as 'Start', T.NumDaysValid as 'Valid (days)', T.Name as 'Membership Type', M.Status FROM Membership as M, Client as C, Workout as W, MembershipType as T WHERE M.Status = @TRUE AND C.ID = M.FK_ClientID AND C.DELETED = @FALSE AND C.FK_WorkoutID = W.ID AND M.FK_MembershipTypeID = T.ID"
+                `SELECT C.Name, C.Surname, C.DateOfBirth, C.Phone, W.Name as 'Workout Name', M.StartDate as 'Start', 
+                T.NumDaysValid as 'Valid (days)', T.Name as 'Membership Type', M.Status FROM Membership as M, Client as C, Workout as W, MembershipType as T 
+                WHERE M.Status = @TRUE AND C.ID = M.FK_ClientID AND C.DELETED = @FALSE AND C.FK_WorkoutID = W.ID AND M.FK_MembershipTypeID = T.ID`
             );
 
         return results.recordset;
@@ -41,7 +43,7 @@ const updateExpiredMembershipQUERY = async () => {
         const request = new sql.Request(pool);
 
         const results = await request.query(
-            "UPDATE Membership SET Status = 0 WHERE ExpiryDate <= GETDATE() AND STATUS <> 0"
+            "UPDATE Membership SET Status = 0 WHERE ExpiryDate <= GETDATE() AND STATUS <> 1"
         );
         console.log(results);
         return results;
