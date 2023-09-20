@@ -62,12 +62,12 @@ const getAllTransactionsQUERY = async () => {
 
 
 const getClientTransactionsQUERY = async (FK_ClientID, startDate, endDate) => {
-    //if a dates are not provided, then it's set to thirty days ago from the current date
+    //if a dates are not provided, then it's set to 180 days ago from the current date
     //client can only see his own transactions (membership renewals)
     try {
         const currDate = new Date();
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(currDate.getDate() - 30); //sets thirtyDaysAgo to 30 days ago from currDate
+        const newCurrDate = new Date();
+        newCurrDate.setDate(currDate.getDate() - 180); //sets thirtyDaysAgo to 30 days ago from currDate
 
         const pool = await sql.connect(dbConfig);
         const results = await pool
@@ -77,7 +77,7 @@ const getClientTransactionsQUERY = async (FK_ClientID, startDate, endDate) => {
             .input(
                 "startDate",
                 sql.DateTime2,
-                startDate ? sql.DateTime2(startDate).scale : sql.DateTime2(thirtyDaysAgo).scale
+                startDate ? sql.DateTime2(startDate).scale : sql.DateTime2(newCurrDate).scale
             ) //converts startDate to DateTime2 format (if startDate is undefined, then it's set to thirtyDaysAgo)
             .input(
                 "endDate",
@@ -101,8 +101,8 @@ const getEmployeeTransactionsQUERY = async (FK_EmployeeID, startDate, endDate) =
     //TESTIRATI OVO
     try {
         const currDate = new Date();
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(currDate.getDate() - 30); //sets thirtyDaysAgo to 30 days ago from currDate
+        const newCurrDate = new Date();
+        newCurrDate.setDate(currDate.getDate() - 180); //sets newCurrDate to 180 days ago from currDate
 
         const pool = await sql.connect(dbConfig);
         const results = await pool
@@ -143,8 +143,8 @@ const getLatestEmployeesTransactionsQUERY = async () => {
                         FROM Transactions AS T2
                         WHERE T2.FK_EmployeeID = T1.FK_EmployeeID
                     );`);
-                    console.log("DAAAAAA", results.recordset);
-        return results.recordset;
+
+            return results.recordset;
     } catch (error) {
         console.log("Error while trying to get all transactions!", error);
     }

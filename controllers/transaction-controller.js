@@ -34,6 +34,7 @@ const getAllTransactions = async (req, res) => {
 };
 
 const getUsersTransactions = async (req, res) => {
+    //OVAJ DIO KODA ZA EMPLOYEE JE SUVIŠAN; ISPRAVITI TO
     const userID = req.params.userID;
     let transactions = null;
     console.log("USLO U GET USERS TRANSACTIONS, StartDate",req.body.startDate, "EndDate", req.body.endDate);
