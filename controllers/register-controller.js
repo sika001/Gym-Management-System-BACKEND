@@ -8,9 +8,12 @@ const register = async (req, res) => {
     //calls 2 functions (addNewClientQUERY and registerClientQuery)
     //first one insert client data into Client table
     //second one inserts client's role in Role table (with email and password)
+
     const person = req.body;
+    // console.log("PERSON:", person);
     const email = req.body.Email;
     const password = req.body.Password;
+
     const hashedPassword = crypto.createHash("md5").update(password).digest("hex"); //hashes password
 
     const rolePerson = {
@@ -26,7 +29,7 @@ const register = async (req, res) => {
     };
 
     let result = null;
-    console.log("PERSON ROLE: ", rolePerson);
+    // console.log("PERSON ROLE: ", rolePerson);
     ///DONT FORGET TO SET FK_EmployeeTypeID IF YOU WANT TO ADD EMPLOYEE
     if (person.FK_EmployeeTypeID == null) {
         console.log("USLO");
@@ -41,32 +44,34 @@ const register = async (req, res) => {
     } else {
         //otherwise, person is an employee
         result = await employeeRepository.addNewEmployeeQUERY(person);
-        console.log("RESULT: ", result);
+        console.log("RESULT EMPLOYEE: ", result);
         rolePerson.FK_EmployeeID = result.recordset[0].ID;
         rolePerson.isEmployee = 1;
         rolePerson.isClient = 0;
         rolePerson.isAdmin = 0;
     }
 
-    if (result.rowsAffected == 1) {
+    if (result.rowsAffected !== 0 ) {
         //if a client/employee is successfully inserted into a database...
         const roleResult = await roleRepository.registerClientQUERY(rolePerson); //email and password must be entered in bod
 
         if (roleResult.rowsAffected == 1) {
-            let token = jwt.sign(
-                {
-                    Email: email,
-                    FK_ClientID: rolePerson.FK_ClientID,
-                    FK_EmployeeID: rolePerson.FK_EmployeeID,
-                    isClient: rolePerson.isClient,
-                    isEmployee: rolePerson.isEmployee,
-                    isAdmin: rolePerson.isAdmin,
-                },
-                "BILDARA",
-                { expiresIn: "10min" }
-            );
+            // let token = jwt.sign(
+            //     {
+            //         Email: email,
+            //         FK_ClientID: rolePerson.FK_ClientID,
+            //         FK_EmployeeID: rolePerson.FK_EmployeeID,
+            //         isClient: rolePerson.isClient,
+            //         isEmployee: rolePerson.isEmployee,
+            //         isAdmin: rolePerson.isAdmin,
+            //     },
+            //     "BILDARA",
+            //     { expiresIn: "10min" }
+            // );
             // console.log("Token: ", jwt.decode(token));
-            res.status(201).send({ token, rolePerson, roleResult });
+            // res.status(201).send({ token, rolePerson, roleResult });
+            res.status(201).send(roleResult.recordset[0]); //šaljem podatke o Role-u, (odavde koristim na frontu FK_ClienID)
+
         }
     } else {
         res.status(400).send("Cannot insert a role into a database!");

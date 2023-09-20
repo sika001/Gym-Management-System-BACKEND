@@ -21,4 +21,16 @@ const addNewWorkoutPrograms = async (req, res) => {
     }
 };
 
-module.exports = { getAllWorkoutPrograms, addNewWorkoutPrograms };
+const deleteWorkoutProgram = async (req, res) => {
+    const workoutID = req.params.workoutID;
+    const result = await workoutRepository.deleteWorkoutProgramQUERY(workoutID);
+
+    if (result) {
+        res.status(200).send(result);
+    } else {
+        res.status(400).send("Error while trying to delete a workout program!");
+    }
+};
+
+
+module.exports = { getAllWorkoutPrograms, addNewWorkoutPrograms, deleteWorkoutProgram };

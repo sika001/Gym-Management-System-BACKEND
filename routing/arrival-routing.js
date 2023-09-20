@@ -3,8 +3,10 @@ const arrivalController = require("../controllers/arrival-controller");
 
 const router = express.Router();
 
-router.get("/:clientID", arrivalController.getClientsArrivals);
-router.post("/:clientID", arrivalController.checkIn);
-router.put("/:clientID", arrivalController.checkOut);
+router.get("/", arrivalController.getAllClientsAtGym);
+router.post("/get/:clientID", arrivalController.getClientsArrivals);
+router.post("/get/all/:clientID", arrivalController.getClientsDailyAVGTimeAtGym);
+router.post("/", arrivalController.checkIn);
+router.put("/", arrivalController.checkOut);
 
 module.exports = router;

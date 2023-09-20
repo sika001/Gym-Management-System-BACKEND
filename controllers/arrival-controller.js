@@ -6,13 +6,12 @@ const getClientsArrivals = async (req, res) => {
     const startDate = req.body.startDate;
     let endDate = req.body.endDate;
     const currDate = DateTime2(new Date()).scale;
-    if (endDate == undefined || endDate > currDate) {
-        //dodati logiku da uporedi startDate i endDate
+    if (endDate === undefined || endDate > currDate) {
         endDate = currDate;
     }
 
     const result = await arrivalRepository.getClientsArrivalsQUERY(clientID, startDate, endDate);
-
+    console.log("ARRIVALS SINCE : ", startDate, " TILL: ", endDate,"," , result);
     if (result) {
         res.status(200).send(result);
     } else {
@@ -20,8 +19,36 @@ const getClientsArrivals = async (req, res) => {
     }
 };
 
+const getAllClientsAtGym = async (req, res) => {
+    const result = await arrivalRepository.getAllClientsAtGymQUERY();
+
+    if (result) {
+        res.status(200).send(result);
+    } else {
+        res.status(400).send("Error while trying to get clients that are currently at gym!");
+    }
+};
+
+const getClientsDailyAVGTimeAtGym = async (req, res) => {
+    const startDate = req.body.startDate;
+    let endDate = req.body.endDate;
+    const currDate = DateTime2(new Date()).scale;
+    if (endDate === undefined || endDate > currDate) {
+        endDate = currDate;
+    }
+    // console.log("startDate: ", startDate, " endDate: ", endDate);
+    const result = await arrivalRepository.getClientsDailyAVGTimeAtGymQUERY(startDate, endDate);
+
+    if (result) {
+        res.status(200).send(result);
+    } else {
+        res.status(400).send("Error while trying to get clients daily average time at gym!");
+    }
+};
+
+
 const checkIn = async (req, res) => {
-    const clientID = req.params.clientID;
+    const clientID = req.body.FK_ClientID;
     const results = await arrivalRepository.checkInQUERY(clientID);
 
     if (results.rowsAffected == 1) {
@@ -32,14 +59,20 @@ const checkIn = async (req, res) => {
 };
 
 const checkOut = async (req, res) => {
-    const clientID = req.params.clientID;
-    const arrivalTime = req.body.ArrivalTime;
-    const results = await arrivalRepository.checkOutQUERY(clientID, arrivalTime);
+    const clientID = req.body.FK_ClientID;
+    const results = await arrivalRepository.checkOutQUERY(clientID);
 
-    if (results.rowsAffected == 1) {
+    if (results.rowsAffected[0] === 1) {
         res.status(200).send(results);
     } else {
         res.status(400).send("Error while trying to check in a client!");
     }
 };
-module.exports = { getClientsArrivals, checkIn, checkOut };
+
+module.exports = { 
+                   getClientsArrivals, 
+                   getAllClientsAtGym, 
+                   getClientsDailyAVGTimeAtGym,
+                   checkIn, 
+                   checkOut 
+                };
