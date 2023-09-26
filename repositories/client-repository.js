@@ -40,14 +40,12 @@ const addNewClientQUERY = async (Client) => {
             .input("DateOfBirth", sql.DateTime2, Client.DateOfBirth)
             .input("Phone", sql.NVarChar(50), Client.Phone)
             .input("Address", sql.NVarChar(50), Client.Address)
-            .input("Email", sql.NVarChar(50), Client.Email)
-            .input("Password", sql.NVarChar(50), Client.Password)
             .input("FK_WorkoutID", sql.Int, Client.FK_WorkoutID)
             .query(
-                "INSERT INTO Client OUTPUT inserted.* VALUES (@Name, @Surname, @DateOfBirth, @Phone, @Address, @Email, @Password, @FK_WorkoutID)"
+                "INSERT INTO Client (Name, Surname, DateOfBirth, Phone, Address, FK_WorkoutID) OUTPUT inserted.* VALUES (@Name, @Surname, @DateOfBirth, @Phone, @Address, @FK_WorkoutID)"
             );
 
-        return result.recordset[0];
+        return result;
     } catch (error) {
         console.log("Error while trying to insert a new client!", error);
     }
@@ -64,11 +62,9 @@ const updateClientQUERY = async (clientID, Client) => {
             .input("DateOfBirth", sql.DateTime2, Client.DateOfBirth)
             .input("Phone", sql.NVarChar(50), Client.Phone)
             .input("Address", sql.NVarChar(50), Client.Address)
-            .input("Email", sql.NVarChar(50), Client.Email)
-            .input("Password", sql.NVarChar(50), Client.Password)
             .input("FK_WorkoutID", sql.Int, Client.FK_WorkoutID)
             .query(
-                "UPDATE Client SET Name = ISNULL(@Name, Name), Surname = ISNULL(@Surname, Surname), DateOfBirth = ISNULL(@DateOfBirth, DateOfBirth), Phone = ISNULL(@Phone, Phone), Address = ISNULL(@Address, Address), Email = ISNULL(@Email, Email), Password = ISNULL(@Password, Password), FK_WorkoutID = ISNULL(@FK_WorkoutID, FK_WorkoutID) WHERE ID = @clientID;"
+                "UPDATE Client SET Name = ISNULL(@Name, Name), Surname = ISNULL(@Surname, Surname), DateOfBirth = ISNULL(@DateOfBirth, DateOfBirth), Phone = ISNULL(@Phone, Phone), Address = ISNULL(@Address, Address), FK_WorkoutID = ISNULL(@FK_WorkoutID, FK_WorkoutID) WHERE ID = @clientID;"
             );
 
         return results;

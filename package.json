@@ -10,9 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/express-jwt": "^7.4.2",
+    "@types/jsonwebtoken": "^9.0.2",
     "async": "^3.2.4",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "express-jwt": "^8.4.1",
+    "jsonwebtoken": "^9.0.1",
     "mssql": "^9.1.1",
     "tedious": "^15.1.3"
   },

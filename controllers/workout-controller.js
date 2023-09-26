@@ -10,15 +10,15 @@ const getAllWorkoutPrograms = async (req, res, next) => {
     }
 };
 
-const addNewMembershipType = async (req, res) => {
-    const membership = req.body;
-    const result = await workoutRepository.addNewMembershipTypeQUERY(membership);
+const addNewWorkoutPrograms = async (req, res) => {
+    const workout = req.body;
+    const result = await workoutRepository.addWorkoutProgramQUERY(workout);
 
     if (result) {
         res.status(201).send(result);
     } else {
-        res.status(400).send("Cannot insert a membership into a database!");
+        res.status(400).send("Cannot insert a new workout into a database!");
     }
 };
 
-module.exports = { getAllWorkoutPrograms, addNewMembershipType };
+module.exports = { getAllWorkoutPrograms, addNewWorkoutPrograms };

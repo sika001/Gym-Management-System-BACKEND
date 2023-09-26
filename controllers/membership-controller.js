@@ -16,7 +16,7 @@ const updateExpiredMemberhsip = async (req, res) => {
     if (result.rowsAffected != 0) {
         res.status(200).send(result);
     } else {
-        res.status(400).send("Didn't update anything!");
+        res.status(204).send("Didn't update anything!"); //204 - No Content
     }
 };
 

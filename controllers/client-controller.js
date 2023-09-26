@@ -21,17 +21,6 @@ const getClientByID = async (req, res) => {
     }
 };
 
-const addNewClient = async (req, res) => {
-    const client = req.body;
-    const result = await clientRepository.addNewClientQUERY(client);
-
-    if (result) {
-        res.status(201).send(result);
-    } else {
-        res.status(400).send("Cannot insert a client into a database!");
-    }
-};
-
 const updateClient = async (req, res) => {
     const clientID = req.params.clientID;
     const client = req.body;
@@ -57,7 +46,6 @@ const deleteClient = async (req, res) => {
 module.exports = {
     getAllClients,
     getClientByID,
-    addNewClient,
     updateClient,
     deleteClient,
     getClientByID,
