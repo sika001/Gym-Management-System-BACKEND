@@ -4,8 +4,8 @@ const clientRepository = require("./client-repository");
 const employeeRepository = require("./employee-repository");
 
 const registerClientQUERY = async (Client) => {
-    //invoked in client-controller (along with addClient function)
-    //password is being hashed in client-controller
+    //poziva se u client-controlleru (zajedno sa  addClient funkcijom)
+    //password se hešira u client-controlleru
     try {
         const pool = await sql.connect(dbConfig);
         const request = new sql.Request(pool);
@@ -30,10 +30,11 @@ const registerClientQUERY = async (Client) => {
 
 const loginQUERY = async (Email, Password) => {
     try {
-        //password is being hashed in the login-controller
+        //password se hešira u login-controlleru
         const pool = await sql.connect(dbConfig);
         const request = new sql.Request(pool);
 
+        //loguje korisnika pomoću maila i passworda, ako nije obrisan
         const results = await request
             .input("Email", sql.NVarChar(50), Email)
             .input("Password", sql.NVarChar(50), Password)
@@ -45,28 +46,30 @@ const loginQUERY = async (Email, Password) => {
                 AND Password = @Password
                 AND (
                     (isClient = 1 AND NOT EXISTS(SELECT 1 FROM Client as C WHERE C.ID = R.FK_ClientID AND C.Deleted = 1))
-                    OR ((isEmployee = 1 OR isAdmin = 1) AND NOT EXISTS(SELECT 1 FROM Employee as E WHERE E.ID = R.FK_EmployeeID AND E.Deleted = 1))
+                    OR ((isEmployee = 1 OR isAdmin = 1) 
+                    AND NOT EXISTS(SELECT 1 FROM Employee as E WHERE E.ID = R.FK_EmployeeID AND E.Deleted = 1))
                 );`
             );
 
         if (results.recordset.length === 1) {
-            //if a user exists, get his data
+            //ako korisnik postoji, vraća njegove podatke
             const roleData = results.recordset[0];
-
+            console.log("roleData", roleData);
             let userData;
             if (roleData.isClient) {
                 const clientResult = await clientRepository.getClientByID_QUERY(
                     roleData.FK_ClientID
-                ); //not calling the function from client-controller, beacuse it accepts FK_ClientID as an url parameter
-                userData = clientResult;
+                ); 
+                userData = { ...roleData, ...clientResult }; //vraća client i role podatke
             } else {
                 //TEST THIS PART WITH AN EMPLYOEE
                 const employeeResult = await employeeRepository.getEmployeeByID_QUERY(
                     roleData.FK_EmployeeID
                 ); //not calling the function from employee-controller, beacuse it accepts FK_EmployeeID as an url parameter
-
-                userData = employeeResult.recordset[0];
+               
+                userData = { ...roleData, ...employeeResult }; //returns employees and role data
             }
+
             console.log("userData", userData);
             return userData;
         }
@@ -75,4 +78,27 @@ const loginQUERY = async (Email, Password) => {
     }
 };
 
-module.exports = { registerClientQUERY, loginQUERY };
+const updateLoginInfoQUERY = async (User) => {
+    //updates email and password in Role table
+    try {
+        const pool = await sql.connect(dbConfig);
+        const request = new sql.Request(pool);
+
+        const results = await request
+            .input("Email", sql.NVarChar(50), User.Email)
+            .input("Password", sql.NVarChar(50), User.Password)
+            .input("FK_ClientID", sql.Int, User.FK_ClientID)
+            .input("FK_EmployeeID", sql.Int, User.FK_EmployeeID)
+            .query(
+                `UPDATE Role 
+                SET Email = ISNULL(@Email, Email), Password = ISNULL(@Password, Password)
+                WHERE FK_ClientID = @FK_ClientID OR FK_EmployeeID = @FK_EmployeeID`
+            );
+
+        return results;
+    } catch (e) {
+        console.log("Error while trying to update login info!");
+    }
+};
+
+module.exports = { registerClientQUERY, loginQUERY, updateLoginInfoQUERY };

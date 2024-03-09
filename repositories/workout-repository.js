@@ -34,4 +34,19 @@ const addWorkoutProgramQUERY = async (Workout) => {
     }
 };
 
-module.exports = { getAllWorkoutProgramsQUERY, addWorkoutProgramQUERY };
+const deleteWorkoutProgramQUERY = async (workoutID) => {
+    try {
+        const pool = await sql.connect(dbConfig);
+        const request = new sql.Request(pool);
+        const result = await request
+            .input("workoutID", sql.Int, workoutID)
+            .query(`DELETE FROM Workout WHERE ID = @workoutID`);
+                
+        return result;
+    } catch (error) {
+        console.log("Error while trying to delete a workout program!", error);
+    }
+};
+
+
+module.exports = { getAllWorkoutProgramsQUERY, addWorkoutProgramQUERY, deleteWorkoutProgramQUERY };

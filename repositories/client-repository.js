@@ -32,6 +32,7 @@ const getClientByID_QUERY = async (clientID) => {
 
 const addNewClientQUERY = async (Client) => {
     try {
+        console.log("PIC: ", Client.Picture);
         const pool = await sql.connect(dbConfig);
         const request = new sql.Request(pool);
         const result = await request
@@ -41,10 +42,13 @@ const addNewClientQUERY = async (Client) => {
             .input("Phone", sql.NVarChar(50), Client.Phone)
             .input("Address", sql.NVarChar(50), Client.Address)
             .input("FK_WorkoutID", sql.Int, Client.FK_WorkoutID)
+            .input("Picture", sql.NVarChar(50), Client.PictureName) //Picture is a file, so we need to get its name
             .query(
-                "INSERT INTO Client (Name, Surname, DateOfBirth, Phone, Address, FK_WorkoutID) OUTPUT inserted.* VALUES (@Name, @Surname, @DateOfBirth, @Phone, @Address, @FK_WorkoutID)"
+                `INSERT INTO Client (Name, Surname, DateOfBirth, Phone, Address, FK_WorkoutID, Picture) OUTPUT inserted.* 
+                VALUES (@Name, @Surname, @DateOfBirth, @Phone, @Address, @FK_WorkoutID, @Picture)`
             );
 
+            console.log("REGISTROVANI KLIJENT: ", result);
         return result;
     } catch (error) {
         console.log("Error while trying to insert a new client!", error);
@@ -63,8 +67,13 @@ const updateClientQUERY = async (clientID, Client) => {
             .input("Phone", sql.NVarChar(50), Client.Phone)
             .input("Address", sql.NVarChar(50), Client.Address)
             .input("FK_WorkoutID", sql.Int, Client.FK_WorkoutID)
+            .input("Picture", sql.NVarChar(50), Client.PictureName)
             .query(
-                "UPDATE Client SET Name = ISNULL(@Name, Name), Surname = ISNULL(@Surname, Surname), DateOfBirth = ISNULL(@DateOfBirth, DateOfBirth), Phone = ISNULL(@Phone, Phone), Address = ISNULL(@Address, Address), FK_WorkoutID = ISNULL(@FK_WorkoutID, FK_WorkoutID) WHERE ID = @clientID;"
+                `UPDATE Client SET Name = ISNULL(@Name, Name), Surname = ISNULL(@Surname, Surname), 
+                DateOfBirth = ISNULL(@DateOfBirth, DateOfBirth), Phone = ISNULL(@Phone, Phone), 
+                Address = ISNULL(@Address, Address), FK_WorkoutID = ISNULL(@FK_WorkoutID, FK_WorkoutID),
+                Picture = ISNULL(@Picture, Picture)
+                WHERE ID = @clientID;`
             );
 
         return results;

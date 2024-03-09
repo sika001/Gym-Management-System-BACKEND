@@ -24,9 +24,11 @@ const getClientByID = async (req, res) => {
 const updateClient = async (req, res) => {
     const clientID = req.params.clientID;
     const client = req.body;
+    console.log("Client: ", client);
     const result = await clientRepository.updateClientQUERY(clientID, client);
 
-    if (result.rowsAffected == 1) {
+    console.log("Result: ", result);
+    if (result.rowsAffected[0] === 1) {
         res.status(200).send(result);
     } else {
         res.status(400).send("Error while trying to update a client!");
