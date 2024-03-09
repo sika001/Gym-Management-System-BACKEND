@@ -19,3 +19,7 @@ Added various features including:
      - For verifying access tokens
      - Multer - for image uploads
   
+
+
+
+## In order to start the app, run the following command: <pre> nodemon app.js </pre> 
